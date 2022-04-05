@@ -1,7 +1,7 @@
 import { Badge } from 'antd';
 import { Header } from 'antd/lib/layout/layout';
 import { FunctionComponent } from 'react';
-import { connect, Link } from 'umi';
+import { connect, history, Link } from 'umi';
 import './index.less';
 
 interface HeaderCompProps {
@@ -11,6 +11,10 @@ interface HeaderCompProps {
 const HeaderComp: FunctionComponent<HeaderCompProps> = (props) => {
   const { token } = props;
 
+  const gotIndex = () => {
+    history.push('/');
+  };
+
   const goLoginOut = () => {};
 
   return (
@@ -18,6 +22,7 @@ const HeaderComp: FunctionComponent<HeaderCompProps> = (props) => {
       <div className="site-header">
         <img
           className="logo"
+          onClick={gotIndex}
           src={require('@/assets/images/logo.svg')}
           alt="logo"
         />

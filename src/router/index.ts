@@ -17,18 +17,22 @@ export const routes = [
       },
       {
         path: '/add-topic',
+        wrappers: ['@/wrappers/login-wrapper'],
         component: '@/pages/edit-topic',
       },
       {
         path: '/edit-topic/:id',
+        wrappers: ['@/wrappers/login-wrapper'],
         component: '@/pages/edit-topic',
       },
       {
         path: '/message',
+        wrappers: ['@/wrappers/login-wrapper'],
         component: '@/pages/message',
       },
       {
         path: '/collect',
+        wrappers: ['@/wrappers/login-wrapper'],
         component: '@/pages/collect',
       },
       {

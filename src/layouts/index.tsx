@@ -1,5 +1,6 @@
-import { Layout } from 'antd';
+import { BackTop, Layout } from 'antd';
 import { Content } from 'antd/lib/layout/layout';
+import { CaretUpOutlined } from '@ant-design/icons';
 import { FunctionComponent, ReactNode } from 'react';
 import FooterComp from './components/footer';
 import HeaderComp from './components/header';
@@ -15,6 +16,9 @@ const Layouts: FunctionComponent<LayoutsProps> = ({ children }) => {
       <HeaderComp />
       <Content className="site-layout">{children}</Content>
       <FooterComp />
+      <BackTop className="back-top-btn" visibilityHeight={200}>
+        <CaretUpOutlined />
+      </BackTop>
     </Layout>
   );
 };

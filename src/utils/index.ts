@@ -1,3 +1,5 @@
+import { topicTypeList } from '@/constant';
+
 /**
  * 日期格式化
  * @param {*} dateStr 日期字符串
@@ -57,3 +59,14 @@ export function setLocalStorage(key: string, val: string) {
 export function getLocalStorage(key: string) {
   return localStorage.getItem(key);
 }
+
+/**
+ * 获取置顶及话题类型
+ * @param isTop 是否置顶
+ * @param tab 类型标识
+ * @returns 类型名称
+ */
+export const getTopicTab = (isTop: boolean, tab: string): string => {
+  if (isTop) return '置顶';
+  return topicTypeList.find((item) => item.key === tab)?.name ?? '未知';
+};

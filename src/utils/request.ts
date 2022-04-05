@@ -17,7 +17,7 @@ const useHttpRequest = (): httpRequestType => {
 
   // 处理请求链接
   const adornUrl = (actionName: string) => {
-    return process.env.VUE_APP_API_BASE_Url + actionName;
+    return process.env.UMI_APP_API_BASE_URL + actionName;
   };
 
   // 请求方法创建

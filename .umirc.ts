@@ -14,6 +14,12 @@ export default defineConfig({
       to: 'favicon.ico',
     },
   ],
+  links: [
+    {
+      rel: 'icon',
+      href: 'favicon.ico',
+    },
+  ],
   routes,
   fastRefresh: {},
   chainWebpack(config) {
