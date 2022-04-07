@@ -7,11 +7,15 @@ import { topicTypeList } from '@/constant';
 import useHttpRequest, { resDataType } from '@/utils/request';
 import { Card, message, Pagination } from 'antd';
 import { AxiosResponse } from 'axios';
-import { useEffect, useState } from 'react';
-import { history } from 'umi';
+import { FunctionComponent, useEffect, useState } from 'react';
+import { connect, globalStateType, history } from 'umi';
 import './index.less';
 
-export default function IndexPage() {
+interface IndexPageProps {
+  listParm: string;
+}
+
+const IndexPage: FunctionComponent<IndexPageProps> = ({ listParm }) => {
   interface getTopicListType {
     page?: number;
     tab?: string;
@@ -48,7 +52,17 @@ export default function IndexPage() {
   };
 
   useEffect(() => {
-    getTopicList();
+    const [tab, pageNum, limitNum] = listParm.split('|') ?? [];
+    if (tab && pageNum && limitNum) {
+      setActiveTypeName(tab);
+      setPage(Number(pageNum));
+      setLimit(Number(limitNum));
+    }
+    getTopicList({
+      page: Number(pageNum),
+      tab: tab,
+      limit: Number(limitNum),
+    });
   }, []);
 
   // 查看详情
@@ -116,4 +130,11 @@ export default function IndexPage() {
       </>
     </PageWrapper>
   );
-}
+};
+
+const mapState = (state: { global: globalStateType }) => {
+  const { global } = state;
+  return global;
+};
+
+export default connect(mapState)(IndexPage);

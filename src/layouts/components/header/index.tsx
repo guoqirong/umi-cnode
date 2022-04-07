@@ -1,7 +1,7 @@
 import { Badge } from 'antd';
 import { Header } from 'antd/lib/layout/layout';
 import { FunctionComponent } from 'react';
-import { connect, history, Link } from 'umi';
+import { connect, globalStateType, history, Link } from 'umi';
 import './index.less';
 
 interface HeaderCompProps {
@@ -70,7 +70,7 @@ const HeaderComp: FunctionComponent<HeaderCompProps> = (props) => {
   );
 };
 
-const mapState = (state: { global: any }) => {
+const mapState = (state: { global: globalStateType }) => {
   const { global } = state;
   return global;
 };

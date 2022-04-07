@@ -66,7 +66,19 @@ export function getLocalStorage(key: string) {
  * @param tab 类型标识
  * @returns 类型名称
  */
-export const getTopicTab = (isTop: boolean, tab: string): string => {
+export const getTopicTab = (isTop?: boolean, tab?: string): string => {
   if (isTop) return '置顶';
   return topicTypeList.find((item) => item.key === tab)?.name ?? '未知';
+};
+
+/**
+ * 将&lt转成<、&gt转成>、“或”转成"
+ * @param content 需转换的字符串
+ * @returns 转换后结果
+ */
+export const changeLtGt = (content: string): string => {
+  let str = content.replace(/“|”/g, '"');
+  str = str.replace(/href="+(\/.?user.?\/|user.?\/)/g, 'href="./#/user/');
+  str = str.replace(/&lt;/g, '<');
+  return str.replace(/&gt;/g, '>');
 };

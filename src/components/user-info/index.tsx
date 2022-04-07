@@ -1,7 +1,7 @@
 import { Avatar, Card, List } from 'antd';
 import { FunctionComponent } from 'react';
 import { connect, Link } from 'umi';
-import { userDataType } from '@/models';
+import { globalStateType, userDataType } from '@/models';
 import './index.less';
 
 interface UserInfoProps {
@@ -17,7 +17,7 @@ const UserInfo: FunctionComponent<UserInfoProps> = ({
 }) => {
   return (
     <>
-      {token ? (
+      {token || userInfo ? (
         <Card title="" className="user-info-card" loading={isLoading}>
           <div>
             <Avatar shape="square" size="large" src={userInfo.avatar_url}>
@@ -25,7 +25,9 @@ const UserInfo: FunctionComponent<UserInfoProps> = ({
             </Avatar>
             <span className="user-name">{userInfo.loginname}</span>
           </div>
-          <div className="user-score">积分：{userInfo.score || ''}</div>
+          {userInfo.score && (
+            <div className="user-score">积分：{userInfo.score || ''}</div>
+          )}
         </Card>
       ) : (
         <Card title="CNode：Node.js专业中文社区" className="user-info-card">
@@ -69,7 +71,7 @@ const UserInfo: FunctionComponent<UserInfoProps> = ({
   );
 };
 
-const mapState = (state: { global: any }) => {
+const mapState = (state: { global: globalStateType }) => {
   const { global } = state;
   return global;
 };

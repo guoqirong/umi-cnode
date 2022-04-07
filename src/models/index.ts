@@ -1,10 +1,11 @@
 import { getLocalStorage } from '@/utils';
 
-export interface userStateType {
+export interface globalStateType {
   token: string;
   simpleUserData: simpleUserDataType;
   userData: userDataType;
   isLoading: boolean;
+  listParm: string;
 }
 
 interface simpleUserDataType {
@@ -40,16 +41,17 @@ export default {
     simpleUserData: {},
     userData: {},
     isLoading: false,
+    listParm: '',
   },
   reducers: {
-    updateToken(state: userStateType, { payload }: { payload: string }) {
+    updateToken(state: globalStateType, { payload }: { payload: string }) {
       return {
         ...state,
         token: payload,
       };
     },
     updateSimpleUserData(
-      state: userStateType,
+      state: globalStateType,
       { payload }: { payload: simpleUserDataType },
     ) {
       return {
@@ -58,7 +60,7 @@ export default {
       };
     },
     updateUserData(
-      state: userStateType,
+      state: globalStateType,
       { payload }: { payload: userDataType },
     ) {
       return {
@@ -66,10 +68,16 @@ export default {
         userData: payload,
       };
     },
-    updateLoading(state: userStateType, { payload }: { payload: boolean }) {
+    updateLoading(state: globalStateType, { payload }: { payload: boolean }) {
       return {
         ...state,
         isLoading: payload,
+      };
+    },
+    updateListParm(state: globalStateType, { payload }: { payload: string }) {
+      return {
+        ...state,
+        listParm: payload,
       };
     },
   },
