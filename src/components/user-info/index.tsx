@@ -20,13 +20,13 @@ const UserInfo: FunctionComponent<UserInfoProps> = ({
       {token || userInfo ? (
         <Card title="" className="user-info-card" loading={isLoading}>
           <div>
-            <Avatar shape="square" size="large" src={userInfo.avatar_url}>
-              {userInfo.loginname}
+            <Avatar shape="square" size="large" src={userInfo?.avatar_url}>
+              {userInfo?.loginname}
             </Avatar>
-            <span className="user-name">{userInfo.loginname}</span>
+            <span className="user-name">{userInfo?.loginname}</span>
           </div>
-          {userInfo.score && (
-            <div className="user-score">积分：{userInfo.score || ''}</div>
+          {userInfo?.score && (
+            <div className="user-score">积分：{userInfo?.score || ''}</div>
           )}
         </Card>
       ) : (
@@ -44,7 +44,7 @@ const UserInfo: FunctionComponent<UserInfoProps> = ({
           <List
             size="small"
             locale={{ emptyText: '暂无数据' }}
-            dataSource={userInfo.recent_topics}
+            dataSource={userInfo?.recent_topics}
             renderItem={(item) => <List.Item>{item.title}</List.Item>}
           />
         </Card>
@@ -60,7 +60,7 @@ const UserInfo: FunctionComponent<UserInfoProps> = ({
           <List
             size="small"
             locale={{ emptyText: '暂无数据' }}
-            dataSource={userInfo.recent_replies}
+            dataSource={userInfo?.recent_replies}
             renderItem={(item) => <List.Item>{item.title}</List.Item>}
           />
         </Card>

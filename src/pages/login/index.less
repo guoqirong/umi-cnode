@@ -1,0 +1,32 @@
+.login-wrapper {
+  height: calc(100vh - 50px - 82px - 40px);
+  width: 90%;
+  position: relative;
+  margin: 0 auto;
+  background: url('~@/assets/images/login-bg.jpeg') no-repeat;
+  padding: 20px 0;
+  background-size: 100% auto;
+  background-position: 0 center;
+  .login-slogan {
+    display: inline-block;
+    font-size: 24px;
+    padding: 30px;
+  }
+  .login-card {
+    position: absolute;
+    right: 40px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 28%;
+    background: rgba(255, 255, 255, 0.9);
+    .login-form {
+      margin: 0 auto;
+      .ant-form-item.is-last-item {
+        margin-bottom: 0;
+      }
+      .ant-btn-primary {
+        margin-bottom: 20px;
+      }
+    }
+  }
+}

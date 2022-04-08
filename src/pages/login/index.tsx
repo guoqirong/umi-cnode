@@ -1,17 +1,43 @@
 import useHttpRequest from '@/utils/request';
-import { Button, Card, Form, Input } from 'antd';
+import { Button, Card, Form, Input, message } from 'antd';
 import { FunctionComponent } from 'react';
-import { useHistory } from 'umi';
+import { connect, Dispatch, globalStateType, useHistory } from 'umi';
+import './index.less';
 
-interface LoginProps {}
+interface LoginProps {
+  dispatch: Dispatch;
+}
 
-const Login: FunctionComponent<LoginProps> = () => {
+const Login: FunctionComponent<LoginProps> = ({ dispatch }) => {
   const { isLoading, adornUrl, httpRequest } = useHttpRequest();
   const history = useHistory();
 
   // 表单提交
   const onFinish = (values: any) => {
-    console.log(values);
+    httpRequest({
+      url: adornUrl(`/api/v1/accesstoken`),
+      method: 'post',
+      data: {
+        accesstoken: values.token,
+      },
+    })
+      .then(({ data }) => {
+        localStorage.setItem('loginname', data.loginname);
+        localStorage.setItem('token', values.token);
+        dispatch({
+          type: 'global/updateToken',
+          payload: values.token,
+        });
+        dispatch({
+          type: 'global/updateSimpleUserData',
+          payload: data,
+        });
+        history.push('/');
+      })
+      .catch((e) => {
+        message.error('登录失败');
+        console.error(e);
+      });
   };
 
   // 取消离开登录页面
@@ -20,45 +46,53 @@ const Login: FunctionComponent<LoginProps> = () => {
   };
 
   return (
-    <Card title="token 登录" style={{ height: 'calc(100vh - 50px - 120px)' }}>
-      <Form
-        wrapperCol={{ offset: 0, span: 24 }}
-        onFinish={onFinish}
-        style={{ width: '50%', margin: '0 auto' }}
-      >
-        <Form.Item
-          name="token"
-          label=""
-          rules={[
-            {
-              required: true,
-              message: '请输入token校验',
-              type: 'string',
-            },
-          ]}
+    <div className="login-wrapper">
+      <span className="login-slogan">欢迎来到 CNode 中文社区</span>
+      <Card title="token 登录" className="login-card">
+        <Form
+          className="login-form"
+          wrapperCol={{ offset: 0, span: 24 }}
+          onFinish={onFinish}
         >
-          <Input placeholder="accesstoken 登录校验" />
-        </Form.Item>
-        <Form.Item>
-          <Button
-            loading={isLoading}
-            type="primary"
-            htmlType="submit"
-            style={{ width: '100%' }}
+          <Form.Item
+            name="token"
+            label=""
+            rules={[
+              {
+                required: true,
+                message: '请输入token校验',
+                type: 'string',
+              },
+            ]}
           >
-            登录
-          </Button>
-          <Button
-            loading={isLoading}
-            style={{ width: '100%' }}
-            onClick={onCancel}
-          >
-            取消
-          </Button>
-        </Form.Item>
-      </Form>
-    </Card>
+            <Input placeholder="accesstoken 登录校验" />
+          </Form.Item>
+          <Form.Item className="is-last-item">
+            <Button
+              loading={isLoading}
+              type="primary"
+              htmlType="submit"
+              style={{ width: '100%' }}
+            >
+              登录
+            </Button>
+            <Button
+              loading={isLoading}
+              style={{ width: '100%' }}
+              onClick={onCancel}
+            >
+              取消
+            </Button>
+          </Form.Item>
+        </Form>
+      </Card>
+    </div>
   );
 };
 
-export default Login;
+const mapState = (state: { global: globalStateType }) => {
+  const { global } = state;
+  return global;
+};
+
+export default connect(mapState)(Login);
