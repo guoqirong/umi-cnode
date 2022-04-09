@@ -7,26 +7,29 @@ import './index.less';
 interface UserInfoProps {
   token: string;
   isLoading: boolean;
+  userData: userDataType;
   userInfo: userDataType;
 }
 
 const UserInfo: FunctionComponent<UserInfoProps> = ({
   token,
   isLoading,
+  userData,
   userInfo,
 }) => {
+  const user = userInfo ?? userData;
   return (
     <>
       {token || userInfo ? (
         <Card title="" className="user-info-card" loading={isLoading}>
           <div>
-            <Avatar shape="square" size="large" src={userInfo?.avatar_url}>
-              {userInfo?.loginname}
+            <Avatar shape="square" size="large" src={user?.avatar_url}>
+              {user?.loginname}
             </Avatar>
-            <span className="user-name">{userInfo?.loginname}</span>
+            <span className="user-name">{user?.loginname}</span>
           </div>
-          {userInfo?.score && (
-            <div className="user-score">积分：{userInfo?.score || ''}</div>
+          {user?.score && (
+            <div className="user-score">积分：{user?.score || ''}</div>
           )}
         </Card>
       ) : (
@@ -35,7 +38,7 @@ const UserInfo: FunctionComponent<UserInfoProps> = ({
           <Link to="/login">登录</Link>
         </Card>
       )}
-      {token ? (
+      {token && user?.recent_topics ? (
         <Card
           title="我的主题"
           className="user-info-card no-padding-card"
@@ -44,14 +47,14 @@ const UserInfo: FunctionComponent<UserInfoProps> = ({
           <List
             size="small"
             locale={{ emptyText: '暂无数据' }}
-            dataSource={userInfo?.recent_topics}
+            dataSource={user?.recent_topics}
             renderItem={(item) => <List.Item>{item.title}</List.Item>}
           />
         </Card>
       ) : (
         ''
       )}
-      {token ? (
+      {token && user?.recent_replies ? (
         <Card
           title="我的回复"
           className="user-info-card no-padding-card"
@@ -60,7 +63,7 @@ const UserInfo: FunctionComponent<UserInfoProps> = ({
           <List
             size="small"
             locale={{ emptyText: '暂无数据' }}
-            dataSource={userInfo?.recent_replies}
+            dataSource={user?.recent_replies}
             renderItem={(item) => <List.Item>{item.title}</List.Item>}
           />
         </Card>

@@ -38,7 +38,9 @@ export default {
   namespace: 'global',
   state: {
     token: getLocalStorage('token'),
-    simpleUserData: {},
+    simpleUserData: {
+      loginname: getLocalStorage('loginname'),
+    },
     userData: {},
     isLoading: false,
     listParm: '',

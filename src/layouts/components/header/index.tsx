@@ -1,21 +1,60 @@
+import useHttpRequest from '@/utils/request';
 import { Badge } from 'antd';
 import { Header } from 'antd/lib/layout/layout';
-import { FunctionComponent } from 'react';
-import { connect, globalStateType, history, Link } from 'umi';
+import { FunctionComponent, useEffect, useState } from 'react';
+import { connect, Dispatch, globalStateType, history, Link } from 'umi';
 import './index.less';
 
 interface HeaderCompProps {
   token: string;
+  dispatch: Dispatch;
 }
 
 const HeaderComp: FunctionComponent<HeaderCompProps> = (props) => {
-  const { token } = props;
+  const { token, dispatch } = props;
 
+  // 前往首页
   const gotIndex = () => {
     history.push('/');
   };
 
-  const goLoginOut = () => {};
+  // 获取未读信息数
+  const [count, setCount] = useState(0);
+  const { adornUrl, httpRequest } = useHttpRequest();
+  const getMassageCount = () => {
+    httpRequest({
+      url: adornUrl(`/api/v1/message/count`),
+      method: 'get',
+      params: {
+        accesstoken: token,
+      },
+    })
+      .then(({ data }) => {
+        setCount(data.data);
+      })
+      .catch((e) => {
+        console.error(e);
+      });
+  };
+
+  useEffect(() => {
+    if (token) {
+      getMassageCount();
+    }
+  }, [token]);
+
+  const goLoginOut = () => {
+    localStorage.clear();
+    dispatch({
+      type: 'global/updateToken',
+      payload: '',
+    });
+    dispatch({
+      type: 'global/updateSimpleUserData',
+      payload: {},
+    });
+    history.push('/');
+  };
 
   return (
     <Header className="header-wapper">
@@ -31,7 +70,7 @@ const HeaderComp: FunctionComponent<HeaderCompProps> = (props) => {
             <Link to="/">首页</Link>
           </span>
           {token ? (
-            <Badge dot={true} count={0}>
+            <Badge dot={true} count={count}>
               <span>
                 <Link to="/message">消息</Link>
               </span>
@@ -57,7 +96,9 @@ const HeaderComp: FunctionComponent<HeaderCompProps> = (props) => {
           </span>
           {token ? (
             <span>
-              <span onClick={goLoginOut}>退出</span>
+              <span className="loginout-btn" onClick={goLoginOut}>
+                退出
+              </span>
             </span>
           ) : (
             <span>

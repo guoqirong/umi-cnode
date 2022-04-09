@@ -52,7 +52,7 @@ const IndexPage: FunctionComponent<IndexPageProps> = ({ listParm }) => {
   };
 
   useEffect(() => {
-    const [tab, pageNum, limitNum] = listParm.split('|') ?? [];
+    const [tab, pageNum, limitNum] = listParm?.split('|') ?? [];
     if (tab && pageNum && limitNum) {
       setActiveTypeName(tab);
       setPage(Number(pageNum));

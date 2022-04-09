@@ -1,3 +1,4 @@
+import { setLocalStorage } from '@/utils';
 import useHttpRequest from '@/utils/request';
 import { Button, Card, Form, Input, message } from 'antd';
 import { FunctionComponent } from 'react';
@@ -22,8 +23,8 @@ const Login: FunctionComponent<LoginProps> = ({ dispatch }) => {
       },
     })
       .then(({ data }) => {
-        localStorage.setItem('loginname', data.loginname);
-        localStorage.setItem('token', values.token);
+        setLocalStorage('loginname', data.loginname);
+        setLocalStorage('token', values.token);
         dispatch({
           type: 'global/updateToken',
           payload: values.token,
@@ -65,7 +66,7 @@ const Login: FunctionComponent<LoginProps> = ({ dispatch }) => {
               },
             ]}
           >
-            <Input placeholder="accesstoken 登录校验" />
+            <Input placeholder="accesstoken 登录校验" autoComplete="off" />
           </Form.Item>
           <Form.Item className="is-last-item">
             <Button

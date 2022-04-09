@@ -89,17 +89,71 @@ const Detail: FunctionComponent<DetailProps> = ({
     getData();
   }, []);
 
-  // 反回首页
+  // 反回
   const history = useHistory();
   const goback = () => {
-    dispatch({
-      type: 'global/updateListParm',
-      payload: location.query?.listParm,
-    });
-    history.push('/');
+    if (location.query?.listParm) {
+      dispatch({
+        type: 'global/updateListParm',
+        payload: location.query?.listParm,
+      });
+      history.push('/');
+    } else {
+      history.push('/collect');
+    }
   };
 
-  const collectClick = (id?: string, isCollect?: boolean) => {};
+  // 收藏和取消收藏
+  const { httpRequest: collectHttpRequest } = useHttpRequest();
+  const collectClick = (id?: string, isCollect?: boolean) => {
+    if (isCollect) {
+      topicDeCollect(id);
+    } else {
+      topicCollect(id);
+    }
+  };
+  const topicCollect = (id?: string) => {
+    collectHttpRequest({
+      url: adornUrl(`/api/v1/topic_collect/collect`),
+      method: 'post',
+      data: {
+        topic_id: id,
+        accesstoken: token,
+      },
+    })
+      .then(() => {
+        if (topic) {
+          const data = { ...topic, is_collect: true };
+          setTopic(data);
+        }
+        message.success('收藏成功');
+      })
+      .catch((e) => {
+        message.error('请求失败');
+        console.error(e);
+      });
+  };
+  const topicDeCollect = (id?: string) => {
+    collectHttpRequest({
+      url: adornUrl(`/api/v1/topic_collect/de_collect`),
+      method: 'post',
+      data: {
+        topic_id: id,
+        accesstoken: token,
+      },
+    })
+      .then(() => {
+        if (topic) {
+          const data = { ...topic, is_collect: false };
+          setTopic(data);
+        }
+        message.success('取消收藏成功');
+      })
+      .catch((e) => {
+        message.error('请求失败');
+        console.error(e);
+      });
+  };
 
   return (
     <PageWrapper
@@ -114,6 +168,7 @@ const Detail: FunctionComponent<DetailProps> = ({
         <Card
           size="small"
           className="detail-card"
+          loading={isLoading}
           cover={
             <PageHeader
               className="site-page-header"
