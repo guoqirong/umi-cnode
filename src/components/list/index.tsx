@@ -1,16 +1,19 @@
 import { FunctionComponent, ReactNode } from 'react';
 import ListItem, { topicListItemType } from '@/components/list-item';
 import { List } from 'antd';
+import { recentDataItemType } from '@/models';
 
 interface ListCompProps {
-  dataList: topicListItemType[];
-  listLoading: boolean;
+  dataList: topicListItemType[] | recentDataItemType[];
+  isSimpleItem?: boolean;
+  listLoading?: boolean;
   onItemClick: Function;
   footer?: ReactNode;
 }
 
 const ListComp: FunctionComponent<ListCompProps> = ({
   dataList,
+  isSimpleItem = false,
   listLoading,
   footer,
   onItemClick,
@@ -24,7 +27,11 @@ const ListComp: FunctionComponent<ListCompProps> = ({
       loading={listLoading}
       footer={footer}
       renderItem={(item) => (
-        <ListItem topicItem={item} onItemClick={onItemClick}></ListItem>
+        <ListItem
+          topicItem={item}
+          isSimpleItem={isSimpleItem}
+          onItemClick={onItemClick}
+        ></ListItem>
       )}
     ></List>
   );

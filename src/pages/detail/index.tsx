@@ -89,7 +89,7 @@ const Detail: FunctionComponent<DetailProps> = ({
     getData();
   }, []);
 
-  // 反回
+  // 返回
   const history = useHistory();
   const goback = () => {
     if (location.query?.listParm) {
@@ -98,6 +98,8 @@ const Detail: FunctionComponent<DetailProps> = ({
         payload: location.query?.listParm,
       });
       history.push('/');
+    } else if (location.query?.userName) {
+      history.push(`/user/${location.query?.userName}`);
     } else {
       history.push('/collect');
     }

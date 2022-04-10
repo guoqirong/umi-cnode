@@ -1,6 +1,6 @@
 import { Avatar, Card, List } from 'antd';
 import { FunctionComponent } from 'react';
-import { connect, Link } from 'umi';
+import { connect, history, Link } from 'umi';
 import { globalStateType, userDataType } from '@/models';
 import './index.less';
 
@@ -9,6 +9,7 @@ interface UserInfoProps {
   isLoading: boolean;
   userData: userDataType;
   userInfo: userDataType;
+  isTopicsRepliesList: boolean;
 }
 
 const UserInfo: FunctionComponent<UserInfoProps> = ({
@@ -16,12 +17,24 @@ const UserInfo: FunctionComponent<UserInfoProps> = ({
   isLoading,
   userData,
   userInfo,
+  isTopicsRepliesList = true,
 }) => {
   const user = userInfo ?? userData;
+
+  // 前往用户详情页
+  const gotoUserDetail = () => {
+    history.push(`/user/${user.loginname}`);
+  };
+
   return (
     <>
       {token || userInfo ? (
-        <Card title="" className="user-info-card" loading={isLoading}>
+        <Card
+          title=""
+          className="user-info-card is-Can-Click"
+          loading={isLoading}
+          onClick={gotoUserDetail}
+        >
           <div>
             <Avatar shape="square" size="large" src={user?.avatar_url}>
               {user?.loginname}
@@ -38,7 +51,7 @@ const UserInfo: FunctionComponent<UserInfoProps> = ({
           <Link to="/login">登录</Link>
         </Card>
       )}
-      {token && user?.recent_topics ? (
+      {isTopicsRepliesList && token && user?.recent_topics ? (
         <Card
           title="我的主题"
           className="user-info-card no-padding-card"
@@ -54,7 +67,7 @@ const UserInfo: FunctionComponent<UserInfoProps> = ({
       ) : (
         ''
       )}
-      {token && user?.recent_replies ? (
+      {isTopicsRepliesList && token && user?.recent_replies ? (
         <Card
           title="我的回复"
           className="user-info-card no-padding-card"

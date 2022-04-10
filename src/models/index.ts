@@ -24,7 +24,7 @@ export interface userDataType {
   score: number;
 }
 
-interface recentDataItemType {
+export interface recentDataItemType {
   author: {
     avatar_url: string;
     loginname: string;

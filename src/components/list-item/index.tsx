@@ -1,3 +1,4 @@
+import { recentDataItemType } from '@/models';
 import { formatDate, getTopicTab } from '@/utils';
 import { Avatar, List, Tag } from 'antd';
 import { FunctionComponent } from 'react';
@@ -22,12 +23,14 @@ export interface topicListItemType {
 }
 
 interface ListItemProps {
-  topicItem: topicListItemType;
+  topicItem: topicListItemType | recentDataItemType;
+  isSimpleItem: boolean;
   onItemClick: Function;
 }
 
 const ListItem: FunctionComponent<ListItemProps> = ({
   topicItem,
+  isSimpleItem,
   onItemClick,
 }) => {
   return (
@@ -45,40 +48,60 @@ const ListItem: FunctionComponent<ListItemProps> = ({
         }
         title={
           <div>
-            <div className="reply-count">
-              <span className="count-of-replies" title="回复数">
-                {topicItem.reply_count}
-              </span>
-              <span>/</span>
-              <span className="count-of-visits" title="点击数">
-                {topicItem.visit_count}
-              </span>
-            </div>
-            <div
-              className="topic-tab"
-              style={{
-                width: !topicItem.top && topicItem.tab === 'dev' ? '' : '50px',
-              }}
-            >
-              <Tag color={topicItem.top ? 'red' : 'green'}>
-                {getTopicTab(topicItem.top, topicItem.tab)}
-              </Tag>
-            </div>
+            {!isSimpleItem && (
+              <div className="reply-count">
+                <span className="count-of-replies" title="回复数">
+                  {(topicItem as topicListItemType).reply_count}
+                </span>
+                <span>/</span>
+                <span className="count-of-visits" title="点击数">
+                  {(topicItem as topicListItemType).visit_count}
+                </span>
+              </div>
+            )}
+            {!isSimpleItem && (
+              <div
+                className="topic-tab"
+                style={{
+                  width:
+                    !(topicItem as topicListItemType).top &&
+                    (topicItem as topicListItemType).tab === 'dev'
+                      ? ''
+                      : '50px',
+                }}
+              >
+                <Tag
+                  color={(topicItem as topicListItemType).top ? 'red' : 'green'}
+                >
+                  {getTopicTab(
+                    (topicItem as topicListItemType).top,
+                    (topicItem as topicListItemType).tab,
+                  )}
+                </Tag>
+              </div>
+            )}
             <div
               className="topic-title"
               title="item.title"
               style={{
-                width:
-                  !topicItem.top && topicItem.tab === 'dev'
-                    ? ''
-                    : 'calc(100% - 60px - 50px - 90px)',
+                width: isSimpleItem
+                  ? 'calc(100% - 60px)'
+                  : !(topicItem as topicListItemType).top &&
+                    (topicItem as topicListItemType).tab === 'dev'
+                  ? ''
+                  : 'calc(100% - 60px - 50px - 90px)',
               }}
             >
               {topicItem.title}
             </div>
-            <div className="created-time">
-              {formatDate(topicItem.create_at, 'yyyy-MM-dd')}
-            </div>
+            {!isSimpleItem && (
+              <div className="created-time">
+                {formatDate(
+                  (topicItem as topicListItemType).create_at,
+                  'yyyy-MM-dd',
+                )}
+              </div>
+            )}
           </div>
         }
       ></List.Item.Meta>
