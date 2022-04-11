@@ -1,4 +1,4 @@
-import { Avatar, Card, List } from 'antd';
+import { Avatar, Card, Empty, List } from 'antd';
 import { FunctionComponent } from 'react';
 import { connect, history, Link } from 'umi';
 import { globalStateType, userDataType } from '@/models';
@@ -59,7 +59,7 @@ const UserInfo: FunctionComponent<UserInfoProps> = ({
         >
           <List
             size="small"
-            locale={{ emptyText: '暂无数据' }}
+            locale={{ emptyText: <Empty /> }}
             dataSource={user?.recent_topics}
             renderItem={(item) => <List.Item>{item.title}</List.Item>}
           />
@@ -75,7 +75,7 @@ const UserInfo: FunctionComponent<UserInfoProps> = ({
         >
           <List
             size="small"
-            locale={{ emptyText: '暂无数据' }}
+            locale={{ emptyText: <Empty /> }}
             dataSource={user?.recent_replies}
             renderItem={(item) => <List.Item>{item.title}</List.Item>}
           />

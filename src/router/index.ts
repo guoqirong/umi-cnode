@@ -2,6 +2,7 @@ export const routes = [
   {
     path: '/',
     component: '@/layouts/index',
+    wrappers: ['@/wrappers/config-provider-wrapper'],
     routes: [
       {
         path: '/',

@@ -1,6 +1,6 @@
 import { FunctionComponent, ReactNode } from 'react';
 import ListItem, { topicListItemType } from '@/components/list-item';
-import { List } from 'antd';
+import { Empty, List } from 'antd';
 import { recentDataItemType } from '@/models';
 
 interface ListCompProps {
@@ -22,7 +22,7 @@ const ListComp: FunctionComponent<ListCompProps> = ({
     <List
       size="small"
       style={{ width: '100%' }}
-      locale={{ emptyText: '暂无数据' }}
+      locale={{ emptyText: <Empty /> }}
       dataSource={dataList}
       loading={listLoading}
       footer={footer}

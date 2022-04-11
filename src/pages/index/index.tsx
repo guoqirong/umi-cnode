@@ -5,7 +5,7 @@ import PageWrapper from '@/components/page-wrapper';
 import UserInfo from '@/components/user-info';
 import { topicTypeList } from '@/constant';
 import useHttpRequest, { resDataType } from '@/utils/request';
-import { Card, message, Pagination } from 'antd';
+import { Button, Card, message, Pagination } from 'antd';
 import { AxiosResponse } from 'axios';
 import { FunctionComponent, useEffect, useState } from 'react';
 import { connect, globalStateType, history } from 'umi';
@@ -65,6 +65,16 @@ const IndexPage: FunctionComponent<IndexPageProps> = ({ listParm }) => {
     });
   }, []);
 
+  // 发布话题
+  const addTopic = () => {
+    history.push({
+      pathname: '/add-topic',
+      query: {
+        listParm: `${activeTypeName}|${page}|${limit}`,
+      },
+    });
+  };
+
   // 查看详情
   const goDetail = (data: topicListItemType) => {
     history.push({
@@ -104,6 +114,11 @@ const IndexPage: FunctionComponent<IndexPageProps> = ({ listParm }) => {
               page: 1,
             });
           }}
+          tabBarExtraContent={
+            <Button type="primary" onClick={addTopic}>
+              发布话题
+            </Button>
+          }
         >
           <ListComp
             dataList={listData}

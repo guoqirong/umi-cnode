@@ -3,7 +3,7 @@ import PageWrapper from '@/components/page-wrapper';
 import UserInfo from '@/components/user-info';
 import { changeLtGt, formatDate } from '@/utils';
 import useHttpRequest from '@/utils/request';
-import { Avatar, Button, Card, List, message } from 'antd';
+import { Avatar, Button, Card, Empty, List, message } from 'antd';
 import { FunctionComponent, useEffect, useState } from 'react';
 import { connect, globalStateType } from 'umi';
 import { authorType } from '../detail';
@@ -103,7 +103,7 @@ const Message: FunctionComponent<MessageProps> = ({ token }) => {
             itemLayout="vertical"
             size="small"
             loading={isLoading}
-            locale={{ emptyText: '暂无数据' }}
+            locale={{ emptyText: <Empty /> }}
             dataSource={messageData?.hasnot_read_messages}
             renderItem={(item) => (
               <List.Item>
@@ -145,7 +145,7 @@ const Message: FunctionComponent<MessageProps> = ({ token }) => {
           <List
             itemLayout="vertical"
             size="small"
-            locale={{ emptyText: '暂无数据' }}
+            locale={{ emptyText: <Empty /> }}
             loading={isLoading}
             dataSource={messageData?.has_read_messages}
             renderItem={(item) => (
