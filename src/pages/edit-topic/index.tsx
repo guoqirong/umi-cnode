@@ -2,14 +2,32 @@ import ClientQtCode from '@/components/client-qr-code';
 import PageWrapper from '@/components/page-wrapper';
 import UserInfo from '@/components/user-info';
 import { topicTypeList } from '@/constant';
-import { Button, Card, Form, Input, PageHeader, Select } from 'antd';
-import { FunctionComponent, useState } from 'react';
+import { Button, Card, Form, Input, message, PageHeader, Select } from 'antd';
+import { FunctionComponent, useEffect, useState } from 'react';
+import {
+  history,
+  useRouteMatch,
+  Location,
+  Dispatch,
+  connect,
+  globalStateType,
+} from 'umi';
 import { Editor } from '@tinymce/tinymce-react';
+import useHttpRequest from '@/utils/request';
+import { changeLtGt } from '@/utils';
 import './index.less';
 
-interface EditTopicProps {}
+interface EditTopicProps {
+  token: string;
+  location: Location<{ listParm: string }>;
+  dispatch: Dispatch;
+}
 
-const EditTopic: FunctionComponent<EditTopicProps> = () => {
+const EditTopic: FunctionComponent<EditTopicProps> = ({
+  token,
+  location,
+  dispatch,
+}) => {
   // 富文本初始配置项
   const init = {
     height: 500, //富文本高度
@@ -35,13 +53,90 @@ const EditTopic: FunctionComponent<EditTopicProps> = () => {
     toolbar:
       'fontselect fontsizeselect link lineheight forecolor backcolor bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | image quicklink h2 h3 blockquote table numlist bullist preview fullscreen',
   };
-
-  const goback = () => {};
-
-  const [content, setContent] = useState('');
   const [form] = Form.useForm();
+  const match = useRouteMatch<{ id: string }>();
+
+  // 数据获取
+  const { isLoading, adornUrl, httpRequest } = useHttpRequest();
+  const getData = () => {
+    httpRequest({
+      url: adornUrl(`/api/v1/topic/${match.params.id}`),
+      method: 'get',
+      params: {
+        mdrender: true,
+        accesstoken: token,
+      },
+    })
+      .then(({ data }) => {
+        data.data.content = changeLtGt(data.data.content);
+        form.setFieldsValue({
+          topic_id: data.data.id,
+          title: data.data.title,
+          content: data.data.content,
+          tab: data.data.tab,
+        });
+      })
+      .catch((e) => {
+        message.error('请求失败');
+        console.error(e);
+      });
+  };
+  useEffect(() => {
+    if (match.params.id) getData();
+  }, []);
+
+  // 返回
+  const goback = () => {
+    if (location.pathname.includes('add-topic')) {
+      dispatch({
+        type: 'global/updateListParm',
+        payload: location.query?.listParm,
+      });
+      history.push('/');
+    } else {
+      history.push({
+        pathname: `/detail`,
+        query: {
+          id: match.params.id,
+          listParm: location.query?.listParm ?? '',
+        },
+      });
+    }
+  };
+
+  // 添加或修改请求
+  const { isLoading: IsSubmitLoading, httpRequest: submitHttpRequest } =
+    useHttpRequest();
   const onFinish = (values: any) => {
-    console.log(values);
+    submitHttpRequest({
+      url: adornUrl(
+        `/api/v1/topics${
+          location.pathname.includes('add-topic') ? '' : '/update'
+        }`,
+      ),
+      method: 'post',
+      data: {
+        topic_id: match.params.id,
+        title: values.title,
+        content: values.content,
+        tab: 'dev',
+        accesstoken: token,
+      },
+    })
+      .then(({ data }) => {
+        if (data?.success) {
+          message.success(
+            location.pathname.includes('add-topic') ? '发布成功' : '修改成功',
+          );
+          goback();
+        }
+      })
+      .catch((e) => {
+        message.error(
+          location.pathname.includes('add-topic') ? '发布失败' : '修改失败',
+        );
+        console.error(e);
+      });
   };
 
   return (
@@ -56,7 +151,7 @@ const EditTopic: FunctionComponent<EditTopicProps> = () => {
       <Card
         size="small"
         className="edit-card"
-        // loading={isLoading}
+        loading={isLoading}
         cover={
           <PageHeader
             className="site-page-header"
@@ -111,16 +206,12 @@ const EditTopic: FunctionComponent<EditTopicProps> = () => {
           <Form.Item
             name="content"
             label="内容"
-            getValueFromEvent={(args) => {
-              console.log(args, form);
-              return;
-              // setContent(args.lastLevel?.content ?? args.level?.content);
-              // form.setFieldsValue({
-              //   content: args.lastLevel?.content ?? args.level?.content,
-              // });
+            getValueFromEvent={() => {
+              return form.getFieldValue('content');
             }}
-            // validateStatus={!content ? "error" : undefined}
-            // help="请输入内容"
+            getValueProps={(value) => {
+              return value;
+            }}
             rules={[
               {
                 required: true,
@@ -128,25 +219,21 @@ const EditTopic: FunctionComponent<EditTopicProps> = () => {
               },
             ]}
           >
-            <Editor
-              api-key="mh2f2ffdlr2zzaky3yk52tx8rtxrxnbt1a6p7p7jx96hy70r"
-              init={init}
-              value={content}
-              onEditorChange={(v) => {
-                setContent(v);
-                form.setFieldsValue({
-                  content: v,
-                });
-                return false;
-              }}
-            ></Editor>
+            {(!match.params.id || form.getFieldValue('content')) && (
+              <Editor
+                api-key="mh2f2ffdlr2zzaky3yk52tx8rtxrxnbt1a6p7p7jx96hy70r"
+                init={init}
+                value={form.getFieldValue('content')}
+                onEditorChange={(v) => {
+                  form.setFieldsValue({
+                    content: v,
+                  });
+                }}
+              ></Editor>
+            )}
           </Form.Item>
           <Form.Item className="is-last-item">
-            <Button
-              // loading={isLoading}
-              type="primary"
-              htmlType="submit"
-            >
+            <Button loading={IsSubmitLoading} type="primary" htmlType="submit">
               提交
             </Button>
           </Form.Item>
@@ -156,4 +243,9 @@ const EditTopic: FunctionComponent<EditTopicProps> = () => {
   );
 };
 
-export default EditTopic;
+const mapState = (state: { global: globalStateType }) => {
+  const { global } = state;
+  return global;
+};
+
+export default connect(mapState)(EditTopic);
