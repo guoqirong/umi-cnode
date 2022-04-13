@@ -21,6 +21,11 @@ export default defineConfig({
     },
   ],
   routes,
+  history: {
+    type: 'hash',
+  },
+  // base: '/umi-cnode/',
+  publicPath: process.env.NODE_ENV === 'production' ? '/umi-cnode/' : '/',
   fastRefresh: {},
   chainWebpack(config) {
     if (process.env.UMI_ENV !== 'dev') {

@@ -78,7 +78,7 @@ export const getTopicTab = (isTop?: boolean, tab?: string): string => {
  */
 export const changeLtGt = (content: string): string => {
   let str = content.replace(/“|”/g, '"');
-  str = str.replace(/href="+(\/.?user.?\/|user.?\/)/g, 'href="./user/');
+  str = str.replace(/href="+(\/.?user.?\/|user.?\/)/g, 'href="./#/user/');
   str = str.replace(/&lt;/g, '<');
   return str.replace(/&gt;/g, '>');
 };
