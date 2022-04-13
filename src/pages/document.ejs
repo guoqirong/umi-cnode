@@ -1,0 +1,13 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <% if (process.env.NODE_ENV === 'production') { %>
+      <meta http-equiv="Content-Security-Policy" content="script-src 'self' https://cdn.tiny.cloud 'sha256-YM8uI2F+VfHULiDF1T+UCYmPwssvvWleyz5k2gtmTQo=' 'sha256-nET88aL5DQBdtSN4HNO1r6ysmi+5edbZhF2Kxoj2too='; object-src 'none'; child-src https:">
+    <% } %>
+    <script src="https://cdn.tiny.cloud/1/mh2f2ffdlr2zzaky3yk52tx8rtxrxnbt1a6p7p7jx96hy70r/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
