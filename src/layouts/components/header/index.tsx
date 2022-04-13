@@ -1,3 +1,4 @@
+import useEventBus from '@/utils/event-bus';
 import useHttpRequest from '@/utils/request';
 import { Badge } from 'antd';
 import { Header } from 'antd/lib/layout/layout';
@@ -37,12 +38,18 @@ const HeaderComp: FunctionComponent<HeaderCompProps> = (props) => {
       });
   };
 
+  const [event] = useEventBus();
   useEffect(() => {
     if (token) {
       getMassageCount();
+      event.on('read-msg', getMassageCount);
     }
+    return () => {
+      event.off('read-msg', getMassageCount);
+    };
   }, [token]);
 
+  // 退出登录
   const goLoginOut = () => {
     localStorage.clear();
     dispatch({

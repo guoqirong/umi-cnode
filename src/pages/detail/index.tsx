@@ -235,7 +235,7 @@ const Detail: FunctionComponent<DetailProps> = ({
 
   // 回复话题
   const [form] = Form.useForm();
-  const [replieForm] = Form.useForm();
+  const replieForms: { [key: string]: FormInstance<any> | null } = {};
   const { httpRequest: replieHttpRequest } = useHttpRequest();
   const replieTopicRequest = (values: {
     content: string;
@@ -282,7 +282,7 @@ const Detail: FunctionComponent<DetailProps> = ({
   const replieData = (i: number, values: any) => {
     replieTopicRequest({
       content: values['replieContent' + i],
-      reply_id: topic?.replies[i].reply_id ?? '',
+      reply_id: topic?.replies[i].id ?? '',
     });
   };
 
@@ -400,17 +400,19 @@ const Detail: FunctionComponent<DetailProps> = ({
                   ></div>
                   {item.isReplie && (
                     <Form
+                      ref={(el) => (replieForms['replieForm' + i] = el)}
                       className="replie-form"
                       layout="vertical"
                       wrapperCol={{ offset: 0, span: 24 }}
-                      form={replieForm}
                       onFinish={(v) => replieData(i, v)}
                     >
                       <Form.Item
                         name={'replieContent' + i}
                         label=""
                         getValueFromEvent={() => {
-                          return replieForm.getFieldValue('replieContent' + i);
+                          return replieForms['replieForm' + i]?.getFieldValue(
+                            'replieContent' + i,
+                          );
                         }}
                         getValueProps={(value) => {
                           return value;
@@ -427,9 +429,11 @@ const Detail: FunctionComponent<DetailProps> = ({
                           id={'replie' + i}
                           init={init}
                           initialValue={item.replieContent}
-                          value={replieForm.getFieldValue('replieContent' + i)}
+                          value={replieForms['replieForm' + i]?.getFieldValue(
+                            'replieContent' + i,
+                          )}
                           onEditorChange={(v) => {
-                            replieForm.setFieldsValue({
+                            replieForms['replieForm' + i]?.setFieldsValue({
                               ['replieContent' + i]: v,
                             });
                           }}

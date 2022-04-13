@@ -2,6 +2,7 @@ import ClientQtCode from '@/components/client-qr-code';
 import PageWrapper from '@/components/page-wrapper';
 import UserInfo from '@/components/user-info';
 import { changeLtGt, formatDate } from '@/utils';
+import useEventBus from '@/utils/event-bus';
 import useHttpRequest from '@/utils/request';
 import { Avatar, Button, Card, Empty, List, message } from 'antd';
 import { FunctionComponent, useEffect, useState } from 'react';
@@ -75,6 +76,44 @@ const Message: FunctionComponent<MessageProps> = ({ token }) => {
     }
   }, [token]);
 
+  // 标记消息已读
+  const { httpRequest: readHttpRequest } = useHttpRequest();
+  const [event] = useEventBus();
+  const readAll = () => {
+    readHttpRequest({
+      url: adornUrl(`/api/v1/message/mark_all`),
+      method: 'post',
+      params: {
+        accesstoken: token,
+      },
+    })
+      .then(() => {
+        event.emit('read-msg');
+        getData();
+      })
+      .catch((e) => {
+        message.error('请求失败');
+        console.error(e);
+      });
+  };
+  const readOne = (id: string) => {
+    readHttpRequest({
+      url: adornUrl(`/api/v1/message/mark_one/${id}`),
+      method: 'post',
+      params: {
+        accesstoken: token,
+      },
+    })
+      .then(() => {
+        event.emit('read-msg');
+        getData();
+      })
+      .catch((e) => {
+        message.error('请求失败');
+        console.error(e);
+      });
+  };
+
   return (
     <PageWrapper
       right={
@@ -90,7 +129,7 @@ const Message: FunctionComponent<MessageProps> = ({ token }) => {
           extra={
             messageData?.hasnot_read_messages &&
             messageData?.hasnot_read_messages.length > 0 ? (
-              <Button type="primary" onClick={() => {}} loading={isLoading}>
+              <Button type="primary" onClick={readAll} loading={isLoading}>
                 全部已读
               </Button>
             ) : (
@@ -120,7 +159,7 @@ const Message: FunctionComponent<MessageProps> = ({ token }) => {
                       </div>
                       <Button
                         className="message-button"
-                        onClick={() => {}}
+                        onClick={() => readOne(item.id)}
                         type="primary"
                         loading={isLoading}
                       >
