@@ -118,12 +118,21 @@ const Detail: FunctionComponent<DetailProps> = ({
 
   // 修改话题
   const editTopic = () => {
-    history.push({
-      pathname: `/edit-topic/${location.query?.id}`,
-      query: {
-        listParm: location.query?.listParm ?? '',
-      },
-    });
+    if (location.query?.userName) {
+      history.push({
+        pathname: `/edit-topic/${location.query?.id}`,
+        query: {
+          userName: location.query?.userName ?? '',
+        },
+      });
+    } else {
+      history.push({
+        pathname: `/edit-topic/${location.query?.id}`,
+        query: {
+          listParm: location.query?.listParm ?? '',
+        },
+      });
+    }
   };
 
   // 收藏和取消收藏
