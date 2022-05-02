@@ -16,6 +16,7 @@ import {
 import { FunctionComponent, useEffect, useState } from 'react';
 import { connect, Dispatch, globalStateType, Location, history } from 'umi';
 import { HeartOutlined } from '@ant-design/icons';
+import { TinyMCE } from 'tinymce';
 import { Editor } from '@tinymce/tinymce-react';
 import './index.less';
 
@@ -118,12 +119,21 @@ const Detail: FunctionComponent<DetailProps> = ({
 
   // 修改话题
   const editTopic = () => {
-    history.push({
-      pathname: `/edit-topic/${location.query?.id}`,
-      query: {
-        listParm: location.query?.listParm ?? '',
-      },
-    });
+    if (location.query?.userName) {
+      history.push({
+        pathname: `/edit-topic/${location.query?.id}`,
+        query: {
+          userName: location.query?.userName ?? '',
+        },
+      });
+    } else {
+      history.push({
+        pathname: `/edit-topic/${location.query?.id}`,
+        query: {
+          listParm: location.query?.listParm ?? '',
+        },
+      });
+    }
   };
 
   // 收藏和取消收藏
@@ -208,7 +218,10 @@ const Detail: FunctionComponent<DetailProps> = ({
   };
 
   // 富文本初始配置项
-  const init = {
+  const init: Parameters<TinyMCE['init']>[0] & {
+    selector?: undefined;
+    target?: undefined;
+  } = {
     height: 200, //富文本高度
     width: '100%', //富文本宽度
     // language_url: './tinymce-langs/zh_CN.js', //中文包
@@ -384,11 +397,19 @@ const Detail: FunctionComponent<DetailProps> = ({
                     className="replie-up"
                     onClick={() => likeAndUnlike(item.id)}
                   >
-                    <div className="icon up-icon"></div>
+                    <div
+                      className="icon up-icon"
+                      style={{
+                        backgroundImage: `url(${require('@/assets/icon/ups.svg')})`,
+                      }}
+                    ></div>
                     {!!item.ups.length && <span>{item.ups.length}</span>}
                   </div>
                   <div
                     className="icon replie-icon"
+                    style={{
+                      backgroundImage: `url(${require('@/assets/icon/replies.svg')})`,
+                    }}
                     onClick={() => changeRepliceItemState(i)}
                   ></div>
                   <div className="replie-desc">

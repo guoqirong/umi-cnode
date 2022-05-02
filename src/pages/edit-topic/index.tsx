@@ -4,6 +4,7 @@ import UserInfo from '@/components/user-info';
 import { topicTypeList } from '@/constant';
 import { Button, Card, Form, Input, message, PageHeader, Select } from 'antd';
 import { FunctionComponent, useEffect, useState } from 'react';
+import { TinyMCE } from 'tinymce';
 import {
   history,
   useRouteMatch,
@@ -29,7 +30,10 @@ const EditTopic: FunctionComponent<EditTopicProps> = ({
   dispatch,
 }) => {
   // 富文本初始配置项
-  const init = {
+  const init: Parameters<TinyMCE['init']>[0] & {
+    selector?: undefined;
+    target?: undefined;
+  } = {
     height: 500, //富文本高度
     width: '100%', //富文本宽度
     // language_url: './tinymce-langs/zh_CN.js', //中文包
@@ -54,6 +58,7 @@ const EditTopic: FunctionComponent<EditTopicProps> = ({
       'fontselect fontsizeselect link lineheight forecolor backcolor bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | image quicklink h2 h3 blockquote table numlist bullist preview fullscreen',
   };
   const [form] = Form.useForm();
+  const [content, setContent] = useState('');
   const match = useRouteMatch<{ id: string }>();
 
   // 数据获取
@@ -69,6 +74,7 @@ const EditTopic: FunctionComponent<EditTopicProps> = ({
     })
       .then(({ data }) => {
         data.data.content = changeLtGt(data.data.content);
+        setContent(data.data.content);
         form.setFieldsValue({
           topic_id: data.data.id,
           title: data.data.title,
@@ -93,6 +99,14 @@ const EditTopic: FunctionComponent<EditTopicProps> = ({
         payload: location.query?.listParm,
       });
       history.push('/');
+    } else if (location.query?.userName) {
+      history.push({
+        pathname: `/detail`,
+        query: {
+          id: match.params.id,
+          userName: location.query?.userName ?? '',
+        },
+      });
     } else {
       history.push({
         pathname: `/detail`,
@@ -219,12 +233,13 @@ const EditTopic: FunctionComponent<EditTopicProps> = ({
               },
             ]}
           >
-            {(!match.params.id || form.getFieldValue('content')) && (
+            {(!match.params.id || content) && (
               <Editor
                 api-key="mh2f2ffdlr2zzaky3yk52tx8rtxrxnbt1a6p7p7jx96hy70r"
                 init={init}
-                value={form.getFieldValue('content')}
+                value={content}
                 onEditorChange={(v) => {
+                  setContent(v);
                   form.setFieldsValue({
                     content: v,
                   });

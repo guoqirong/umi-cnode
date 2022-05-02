@@ -65,7 +65,11 @@ const Layouts: FunctionComponent<LayoutsProps> = ({
       <HeaderComp />
       <Content className="site-layout">{children}</Content>
       <FooterComp />
-      <BackTop className="back-top-btn" visibilityHeight={200}>
+      <BackTop
+        className="back-top-btn"
+        visibilityHeight={200}
+        target={() => document.getElementById('root') ?? window}
+      >
         <CaretUpOutlined />
       </BackTop>
     </Layout>

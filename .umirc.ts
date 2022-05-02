@@ -2,10 +2,17 @@ import { defineConfig } from 'umi';
 import { routes } from './src/router';
 const CompressionWebpackPlugin = require('compression-webpack-plugin');
 const prodGzipList = ['js', 'css'];
+const { name } = require('./package.json');
 
 export default defineConfig({
   nodeModulesTransform: {
     type: 'none',
+  },
+  devServer: {
+    headers: {
+      // 同重点1，允许子应用跨域
+      'Access-Control-Allow-Origin': '*',
+    },
   },
   title: 'umi-cnode',
   copy: [
@@ -24,7 +31,10 @@ export default defineConfig({
   history: {
     type: 'hash',
   },
-  // base: '/umi-cnode/',
+  qiankun: {
+    slave: {},
+  },
+  runtimePublicPath: true,
   publicPath: process.env.NODE_ENV === 'production' ? '/umi-cnode/' : '/',
   fastRefresh: {},
   chainWebpack(config) {

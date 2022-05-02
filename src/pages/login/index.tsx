@@ -47,7 +47,12 @@ const Login: FunctionComponent<LoginProps> = ({ dispatch }) => {
   };
 
   return (
-    <div className="login-wrapper">
+    <div
+      className="login-wrapper"
+      style={{
+        backgroundImage: `url(${require('@/assets/images/login-bg.jpeg')})`,
+      }}
+    >
       <span className="login-slogan">欢迎来到 CNode 中文社区</span>
       <Card title="token 登录" className="login-card">
         <Form
