@@ -58,11 +58,15 @@ const IndexPage: FunctionComponent<IndexPageProps> = ({ listParm }) => {
       setPage(Number(pageNum));
       setLimit(Number(limitNum));
     }
-    getTopicList({
-      page: Number(pageNum),
-      tab: tab,
-      limit: Number(limitNum),
-    });
+    getTopicList(
+      tab && pageNum && limitNum
+        ? {
+            page: Number(pageNum),
+            tab: tab,
+            limit: Number(limitNum),
+          }
+        : undefined,
+    );
   }, []);
 
   // 发布话题
