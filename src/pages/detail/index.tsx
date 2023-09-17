@@ -14,7 +14,14 @@ import {
   Tag,
 } from 'antd';
 import { FunctionComponent, useEffect, useState } from 'react';
-import { connect, Dispatch, globalStateType, Location, history } from 'umi';
+import {
+  connect,
+  Dispatch,
+  globalStateType,
+  Location,
+  history,
+  userDataType,
+} from 'umi';
 import { HeartOutlined } from '@ant-design/icons';
 import { TinyMCE } from 'tinymce';
 import { Editor } from '@tinymce/tinymce-react';
@@ -47,7 +54,7 @@ interface topicDetailType {
   reply_count: number;
   visit_count: number;
   create_at: string;
-  author: authorType;
+  author: userDataType;
   replies: topicRepliesType[];
   is_collect: boolean;
 }
@@ -126,13 +133,15 @@ const Detail: FunctionComponent<DetailProps> = ({
           userName: location.query?.userName ?? '',
         },
       });
-    } else {
+    } else if (location.query?.listParm) {
       history.push({
         pathname: `/edit-topic/${location.query?.id}`,
         query: {
           listParm: location.query?.listParm ?? '',
         },
       });
+    } else {
+      history.push(`/edit-topic/${location.query?.id}`);
     }
   };
 
