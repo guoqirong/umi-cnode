@@ -8,8 +8,8 @@ interface UserInfoProps {
   token: string;
   isLoading: boolean;
   userData: userDataType;
-  userInfo: userDataType;
-  isTopicsRepliesList: boolean;
+  userInfo?: userDataType;
+  isTopicsRepliesList?: boolean;
 }
 
 const UserInfo: FunctionComponent<UserInfoProps> = ({
